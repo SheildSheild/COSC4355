@@ -8,67 +8,64 @@
 import SwiftUI
 
 struct WorkoutsView: View {
-    @StateObject private var viewModel = ExerciseViewModel()
-    @EnvironmentObject var favoritesManager: FavoritesManager
+    @StateObject private var viewModel = ExerciseViewModel() // Assume the ExerciseViewModel is already implemented
+    @State private var searchText = ""
+    @State private var selectedBodyPart: Int? = nil // Filter by category (body part)
 
-    @State private var selectedBodyPart: Int? = nil
-
-    let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
-    let darkGray2 = Color(red: 65/255, green: 65/255, blue: 65/255)
-    let accentColor = Color(red: 253/255, green: 175/255, blue: 123/255)
-
-    // Categories for filtering by body part (replace with real category IDs from API)
-    let categories = [
-        (id: 8, name: "Upper Body"),  // Replace with actual category IDs from the API
-        (id: 9, name: "Lower Body"),
-        (id: 10, name: "Core"),
-        (id: 11, name: "Full Body")
+    // Example body parts mapped to category IDs
+    let bodyParts = [
+        "All": nil,
+        "Chest": 10,
+        "Legs": 8,
+        "Back": 12,
+        "Arms": 13,
+        "Shoulders": 14
     ]
 
     var filteredExercises: [Exercise] {
-        return viewModel.exercises.filter { exercise in
-            (selectedBodyPart == nil || exercise.category == selectedBodyPart)
+        viewModel.exercises.filter { exercise in
+            (selectedBodyPart == nil || exercise.category == selectedBodyPart) &&
+            (searchText.isEmpty || exercise.name.lowercased().contains(searchText.lowercased()))
         }
     }
 
     var body: some View {
         VStack {
-            // Filters
-            HStack {
-                Picker("Body Part", selection: $selectedBodyPart) {
-                    Text("All").tag(nil as Int?)
-                    ForEach(categories, id: \.id) { category in
-                        Text(category.name).tag(category.id as Int?)
-                    }
-                }
-                .pickerStyle(MenuPickerStyle())
-                .background(darkGray2)
-                .foregroundColor(.white)
+            // Search bar
+            TextField("Search exercises", text: $searchText)
+                .padding()
+                .background(Color.white)
                 .cornerRadius(8)
+                .padding(.horizontal)
+
+            // Body part filter picker
+            Picker("Select body part", selection: $selectedBodyPart) {
+                ForEach(bodyParts.keys.sorted(), id: \.self) { bodyPart in
+                    Text(bodyPart)
+                        .tag(bodyParts[bodyPart] ?? nil) // Fixed the issue here
+                }
             }
+            .pickerStyle(SegmentedPickerStyle())
             .padding()
 
-            // Filtered Workouts List
-            List(filteredExercises) { exercise in
-                VStack(alignment: .leading) {
-                    Text(exercise.name)
-                        .font(.headline)
-                        .foregroundColor(.white)
-                    if let description = exercise.description {
-                        Text(description)
+            // Exercises list
+            List(filteredExercises, id: \.id) { exercise in
+                NavigationLink(destination: ExerciseDetailView(exercise: exercise)) {
+                    VStack(alignment: .leading) {
+                        Text(exercise.name)
+                            .font(.headline)
+                        Text(exercise.description ?? "")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
                 }
-                .listRowBackground(darkGray2)
             }
-            .background(darkGray3)
-            .scrollContentBackground(.hidden)
-            .onAppear {
-                viewModel.fetchExercises() // Fetch exercises when view appears
-            }
+            .listStyle(PlainListStyle())
         }
-        .background(darkGray3.ignoresSafeArea())
+        .navigationTitle("Workouts")
+        .onAppear {
+            viewModel.fetchExercises() // Fetch exercises from the API when the view appears
+        }
     }
 }
 
