@@ -82,15 +82,19 @@ struct FitnessQuizView: View {
                         .cornerRadius(10)
                         .padding(.horizontal, 20)
                 }
-            } else {
-                Text("Here are your recommended workouts")
-                    .font(.headline)
-                    .padding()
-                    .foregroundColor(.white)
             }
         }
         .padding()
         .background(darkGray3.ignoresSafeArea())
+        .fullScreenCover(isPresented: $isQuizCompleted) {
+            // Present MainTabView as a full screen modal, with no option to go back
+            MainTabView(
+                selectedGoal: selectedGoal,
+                selectedExperience: selectedExperience,
+                selectedPreference: selectedPreference
+            )
+            .environmentObject(FavoritesManager()) // Provide FavoritesManager if needed
+        }
     }
 }
 
