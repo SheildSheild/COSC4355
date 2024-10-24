@@ -1,10 +1,3 @@
-//
-//  WorkoutsView.swift
-//  Semester_Long_App_Project
-//
-//  Created by Shield on 10/21/24.
-//
-
 import SwiftUI
 
 struct WorkoutsView: View {
@@ -77,10 +70,11 @@ struct WorkoutsView: View {
                     }
                 }
                 .listStyle(PlainListStyle())
+                .padding(.bottom, 20) // Padding to ensure no overlap with the tab bar
             }
             .background(darkGray3.ignoresSafeArea()) // Apply background color to whole view
             .navigationTitle("Workouts")
-            .foregroundColor(accentColor) // Apply accent color to the text and elements
+            .foregroundColor(accentColor)
         }
     }
 }

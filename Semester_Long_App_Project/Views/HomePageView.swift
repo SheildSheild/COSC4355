@@ -75,7 +75,7 @@ struct HomePageView: View {
 
             Spacer()
         }
-        .background(darkGray3.ignoresSafeArea())
+        .background(darkGray3)
         .onAppear {
             viewModel.fetchExercises() // Fetch exercises to show curated workouts
         }

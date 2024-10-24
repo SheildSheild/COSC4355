@@ -1,10 +1,3 @@
-//
-//  CustomWorkoutForm.swift
-//  Semester_Long_App_Project
-//
-//  Created by Shield on 10/23/24.
-//
-
 import SwiftUI
 
 struct CustomWorkoutForm: View {
@@ -45,6 +38,7 @@ struct CustomWorkoutForm: View {
                     .foregroundColor(.white)
             }
             .background(darkGray3)
+            .scrollContentBackground(.hidden) // Ensures List background matches the view
 
             Spacer()
 
@@ -63,8 +57,10 @@ struct CustomWorkoutForm: View {
                     .padding(.horizontal, 20)
             }
             .disabled(workoutName.isEmpty)
+            .padding(.bottom, 20)  // Added padding to prevent overlapping with the tab bar
         }
         .background(darkGray3.ignoresSafeArea())
+        .padding(.bottom, 20)  // Additional padding for overall content to avoid the tab bar
     }
 }
 

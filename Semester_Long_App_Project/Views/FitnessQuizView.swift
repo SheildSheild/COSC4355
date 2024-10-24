@@ -1,10 +1,3 @@
-//
-//  FitnessQuizView.swift
-//  Semester_Long_App_Project
-//
-//  Created by Shield on 10/21/24.
-//
-
 import SwiftUI
 
 struct FitnessQuizView: View {
@@ -16,84 +9,76 @@ struct FitnessQuizView: View {
     let darkGray1 = Color(red: 82/255, green: 82/255, blue: 82/255)
     let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
     let accentColor = Color(red: 253/255, green: 175/255, blue: 123/255)
+    let backgroundColor = Color(red: 36/255, green: 36/255, blue: 36/255)
 
     var body: some View {
         VStack {
             if !isQuizCompleted {
-                Text("Fitness Assessment")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundColor(.white)
-                    .padding(.top)
-
-                Spacer()
-
-                Text("What is your main fitness goal?")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                Picker(selection: $selectedGoal, label: Text("")) {
-                    Text("Build Muscle").tag("Muscle")
-                    Text("Lose Weight").tag("Weight Loss")
-                    Text("Improve Endurance").tag("Endurance")
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-                .background(darkGray1)
-                .cornerRadius(8)
-
-                Text("How experienced are you in working out?")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                Picker(selection: $selectedExperience, label: Text("")) {
-                    Text("Beginner").tag("Beginner")
-                    Text("Intermediate").tag("Intermediate")
-                    Text("Advanced").tag("Advanced")
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-                .background(darkGray1)
-                .cornerRadius(8)
-
-                Text("What kind of workouts do you prefer?")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                Picker(selection: $selectedPreference, label: Text("")) {
-                    Text("Weight Training").tag("Weights")
-                    Text("Bodyweight").tag("Bodyweight")
-                    Text("Cardio").tag("Cardio")
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-                .background(darkGray1)
-                .cornerRadius(8)
-
-                Spacer()
-
-                Button(action: {
-                    isQuizCompleted = true
-                }) {
-                    Text("See Your Workouts")
-                        .font(.title2)
+                VStack(spacing: 16) {
+                    Text("Fitness Assessment")
+                        .font(.largeTitle)
                         .bold()
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(accentColor)
-                        .foregroundColor(darkGray3)
-                        .cornerRadius(10)
-                        .padding(.horizontal, 20)
+                        .foregroundColor(accentColor)
+
+                    ProgressView(value: 0.66)
+                        .progressViewStyle(LinearProgressViewStyle(tint: accentColor))
+                        .padding(.horizontal)
+                    
+                    Spacer()
+
+                    Group {
+                        quizSection(title: "Your fitness goal?", options: ["Muscle", "Weight Loss", "Endurance"], selection: $selectedGoal)
+                        quizSection(title: "Your experience level?", options: ["Beginner", "Intermediate", "Advanced"], selection: $selectedExperience)
+                        quizSection(title: "Workout preference?", options: ["Weights", "Bodyweight", "Cardio"], selection: $selectedPreference)
+                    }
+                    .padding(.horizontal)
+
+                    Spacer()
+
+                    Button(action: {
+                        isQuizCompleted = true
+                    }) {
+                        Text("See Your Workouts")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(accentColor)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                            .padding(.horizontal, 20)
+                    }
                 }
+                .padding()
+                .background(backgroundColor)
             }
         }
-        .padding()
-        .background(darkGray3.ignoresSafeArea())
         .fullScreenCover(isPresented: $isQuizCompleted) {
-            // Present MainTabView as a full screen modal, with no option to go back
             MainTabView(
                 selectedGoal: selectedGoal,
                 selectedExperience: selectedExperience,
                 selectedPreference: selectedPreference
             )
-            .environmentObject(FavoritesManager()) // Provide FavoritesManager if needed
+            .environmentObject(FavoritesManager())
+        }
+    }
+    
+    func quizSection(title: String, options: [String], selection: Binding<String?>) -> some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.title2)
+                .bold()
+                .foregroundColor(.white)
+
+            Picker(selection: selection, label: Text("")) {
+                ForEach(options, id: \.self) { option in
+                    Text(option).tag(option as String?)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+            .background(darkGray1)
+            .cornerRadius(8)
         }
     }
 }

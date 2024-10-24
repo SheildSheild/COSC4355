@@ -70,7 +70,7 @@ struct CreateCustomWorkoutView: View {
                 )
             }
         }
-        .background(darkGray3.ignoresSafeArea())
+        .background(darkGray3)
         .navigationTitle("Create Workout")
     }
 

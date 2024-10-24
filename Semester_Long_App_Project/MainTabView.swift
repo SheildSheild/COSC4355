@@ -1,11 +1,17 @@
-//
-//  MainTabView.swift
-//  Semester_Long_App_Project
-//
-//  Created by Shield on 10/21/24.
-//
-
 import SwiftUI
+
+struct CustomTabBarViewModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                let appearance = UITabBarAppearance()
+                appearance.configureWithOpaqueBackground()
+                appearance.backgroundColor = UIColor(Color(red: 49/255, green: 49/255, blue: 49/255)) // Custom dark gray color
+                UITabBar.appearance().standardAppearance = appearance
+                UITabBar.appearance().scrollEdgeAppearance = appearance // For iOS 15 and later
+            }
+    }
+}
 
 struct MainTabView: View {
     @EnvironmentObject var favoritesManager: FavoritesManager
@@ -52,6 +58,7 @@ struct MainTabView: View {
                 }
         }
         .accentColor(accentColor) // Set the accent color for the tab icons and text
+        .modifier(CustomTabBarViewModifier()) // Apply the custom modifier for the tab bar color
     }
 }
 

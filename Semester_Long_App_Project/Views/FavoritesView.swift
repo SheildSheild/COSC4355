@@ -1,10 +1,3 @@
-//
-//  FavoritesView.swift
-//  Semester_Long_App_Project
-//
-//  Created by Shield on 10/21/24.
-//
-
 import SwiftUI
 
 struct FavoritesView: View {
@@ -19,50 +12,47 @@ struct FavoritesView: View {
     }
 
     var body: some View {
-        VStack {
-            Text("Favorite Exercises")
-                .font(.largeTitle)
-                .bold()
-                .foregroundColor(.white)
-                .padding(.top)
+        NavigationView {
+            VStack {
+                if favoriteExercises.isEmpty {
+                    Text("No favorite exercises yet.")
+                        .foregroundColor(.gray)
+                        .padding()
+                } else {
+                    List(favoriteExercises) { exercise in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(exercise.name)
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                if let description = exercise.description {
+                                    Text(description)
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            Spacer()
 
-            if favoriteExercises.isEmpty {
-                Text("No favorite exercises yet.")
-                    .foregroundColor(.gray)
-                    .padding()
-            } else {
-                List(favoriteExercises) { exercise in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(exercise.name)
-                                .font(.headline)
-                                .foregroundColor(.white)
-                            if let description = exercise.description {
-                                Text(description)
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
+                            // Button to remove from favorites
+                            Button(action: {
+                                favoritesManager.remove(exercise.name)
+                            }) {
+                                Image(systemName: "star.fill")
+                                    .foregroundColor(.yellow)
                             }
                         }
-                        Spacer()
-
-                        // Button to remove from favorites
-                        Button(action: {
-                            favoritesManager.remove(exercise.name)
-                        }) {
-                            Image(systemName: "star.fill")
-                                .foregroundColor(.yellow)
-                        }
+                        .listRowBackground(darkGray2)
                     }
-                    .listRowBackground(darkGray2)
+                    .background(darkGray3) // This ensures the List background is also the same color
+                    .scrollContentBackground(.hidden) // Hides default List background
                 }
-                .background(darkGray3)
-                .scrollContentBackground(.hidden)
             }
+            .onAppear {
+                viewModel.fetchExercises() // Ensure the exercises are fetched
+            }
+            .background(darkGray3.ignoresSafeArea()) // Ensures entire background is filled
+            .navigationTitle("Favorite Exercises") // Set the navigation title
         }
-        .onAppear {
-            viewModel.fetchExercises() // Ensure the exercises are fetched
-        }
-        .background(darkGray3.ignoresSafeArea())
     }
 }
 
