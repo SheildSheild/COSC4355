@@ -14,42 +14,41 @@ struct CreateCustomWorkoutView: View {
     @State private var workoutDescription: String = ""
     @State private var showWorkoutForm = false
 
-    // Color scheme
     let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
     let accentColor = Color(red: 253/255, green: 175/255, blue: 123/255)
 
     var body: some View {
         VStack {
+            // All exercises
+            Text("All Exercises")
+                .font(.title2)
+                .foregroundColor(.white)
+                .padding(.top)
+
             List(viewModel.exercises, id: \.id) { exercise in
                 HStack {
                     Text(exercise.name)
                         .font(.headline)
                         .foregroundColor(.white)
-                    
+
                     Spacer()
 
                     Button(action: {
-                        if selectedExercises.contains(exercise) {
-                            selectedExercises.removeAll { $0 == exercise }
-                        } else {
-                            selectedExercises.append(exercise)
-                        }
+                        toggleExerciseSelection(exercise)
                     }) {
                         Image(systemName: selectedExercises.contains(exercise) ? "checkmark.circle.fill" : "circle")
                             .foregroundColor(selectedExercises.contains(exercise) ? .green : .gray)
                     }
                 }
                 .padding()
-                .background(darkGray3)
+                .background(darkGray3.ignoresSafeArea())
                 .cornerRadius(10)
             }
             .onAppear {
                 viewModel.fetchExercises()
             }
 
-            Button(action: {
-                showWorkoutForm = true
-            }) {
+            Button(action: { showWorkoutForm = true }) {
                 Text("Create Custom Workout")
                     .font(.title2)
                     .bold()
@@ -70,25 +69,37 @@ struct CreateCustomWorkoutView: View {
                 )
             }
         }
-        .background(darkGray3)
-        .navigationTitle("Create Workout")
+        .padding(.bottom, 20)
+        .background(darkGray3.ignoresSafeArea())
+    }
+
+    private func toggleExerciseSelection(_ exercise: Exercise) {
+        if selectedExercises.contains(exercise) {
+            selectedExercises.removeAll { $0 == exercise }
+        } else {
+            selectedExercises.append(exercise)
+        }
     }
 
     private func saveWorkout() {
         let totalDuration = selectedExercises.reduce(0) { $0 + ($1.duration ?? 10) }
-        
+        var workouts = UserDefaults.standard.getCustomWorkouts() ?? []
         let newWorkout = CustomWorkout(
             name: workoutName,
             description: workoutDescription,
             duration: totalDuration,
             exercises: selectedExercises
         )
-        UserDefaults.standard.saveWorkout(newWorkout)
+        workouts.append(newWorkout)
+        UserDefaults.standard.saveCustomWorkouts(workouts)
+
+        // Reset fields
         selectedExercises.removeAll()
         workoutName = ""
         workoutDescription = ""
     }
 }
+
 
 struct CustomWorkout: Identifiable, Codable {
     var id = UUID()

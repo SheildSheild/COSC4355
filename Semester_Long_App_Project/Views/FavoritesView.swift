@@ -1,58 +1,101 @@
+//
+//  FavoritesView.swift
+//  Semester_Long_App_Project
+//
+//  Created by Shield on 10/21/24.
+//
+
 import SwiftUI
 
 struct FavoritesView: View {
     @EnvironmentObject var favoritesManager: FavoritesManager
     @StateObject private var viewModel = ExerciseViewModel()
 
+    @State private var selectedTab = 0 // 0 for Exercises, 1 for Workouts
+
     let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
     let darkGray2 = Color(red: 65/255, green: 65/255, blue: 65/255)
-
-    var favoriteExercises: [Exercise] {
-        return viewModel.exercises.filter { favoritesManager.contains($0.name) }
-    }
 
     var body: some View {
         NavigationView {
             VStack {
-                if favoriteExercises.isEmpty {
-                    Text("No favorite exercises yet.")
-                        .foregroundColor(.gray)
-                        .padding()
-                } else {
-                    List(favoriteExercises) { exercise in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(exercise.name)
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                if let description = exercise.description {
-                                    Text(description)
-                                        .font(.subheadline)
-                                        .foregroundColor(.gray)
+                Text("Favorites")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(.white)
+                    .padding(.top)
+                
+                Picker("Favorites", selection: $selectedTab) {
+                    Text("Exercises").tag(0)
+                    Text("Workouts").tag(1)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+                
+                if selectedTab == 0 {
+                    // Favorite exercises tab
+                    if favoritesManager.favoriteExercises.isEmpty {
+                        Text("No favorite exercises yet.")
+                            .foregroundColor(.gray)
+                            .padding()
+                    } else {
+                        List(favoritesManager.favoriteExercises, id: \.id) { exercise in
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(exercise.name)
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                    if let description = exercise.description {
+                                        Text(description)
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                                Spacer()
+                                
+                                // Remove from favorites button
+                                Button(action: {
+                                    favoritesManager.removeExercise(exercise)
+                                }) {
+                                    Image(systemName: "star.fill")
+                                        .foregroundColor(.yellow)
                                 }
                             }
-                            Spacer()
-
-                            // Button to remove from favorites
-                            Button(action: {
-                                favoritesManager.remove(exercise.name)
-                            }) {
-                                Image(systemName: "star.fill")
-                                    .foregroundColor(.yellow)
-                            }
+                            .listRowBackground(darkGray2)
                         }
-                        .listRowBackground(darkGray2)
+                        .background(darkGray3)
+                        .scrollContentBackground(.hidden)
                     }
-                    .background(darkGray3) // This ensures the List background is also the same color
-                    .scrollContentBackground(.hidden) // Hides default List background
+                } else {
+                    // Favorite workouts tab
+                    if favoritesManager.favoriteWorkouts.isEmpty {
+                        Text("No favorite workouts yet.")
+                            .foregroundColor(.gray)
+                            .padding()
+                    } else {
+                        List(favoritesManager.favoriteWorkouts, id: \.id) { workout in
+                            VStack(alignment: .leading) {
+                                Text(workout.name)
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                Text(workout.description)
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
+                            .listRowBackground(darkGray2)
+                        }
+                        .background(darkGray3)
+                        .scrollContentBackground(.hidden)
+                    }
                 }
             }
-            .onAppear {
-                viewModel.fetchExercises() // Ensure the exercises are fetched
-            }
-            .background(darkGray3.ignoresSafeArea()) // Ensures entire background is filled
-            .navigationTitle("Favorite Exercises") // Set the navigation title
+            .background(darkGray3.ignoresSafeArea())
         }
+        .onAppear {
+            viewModel.fetchExercises() // Ensure the exercises are fetched
+        }
+        .background(darkGray3.ignoresSafeArea()) // Ensures entire background is filled
+        .navigationTitle("Favorite Exercises")
     }
 }
 

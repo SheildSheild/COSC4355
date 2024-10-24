@@ -1,29 +1,36 @@
+//
+//  WorkoutsView.swift
+//  Semester_Long_App_Project
+//
+//  Created by Shield on 10/21/24.
+//
+
 import SwiftUI
 
 struct WorkoutsView: View {
     @StateObject private var viewModel = ExerciseViewModel()
+    @EnvironmentObject var favoritesManager: FavoritesManager // Access favorites manager
     @State private var searchText = ""
-    @State private var selectedBodyPart: Int? = nil
+    @State private var selectedMuscle: Int? = nil
 
-    // Define the color palette
     let darkGray1 = Color(red: 82/255, green: 82/255, blue: 82/255)
     let darkGray2 = Color(red: 65/255, green: 65/255, blue: 65/255)
     let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
     let accentColor = Color(red: 253/255, green: 175/255, blue: 123/255)
 
-    // Example body parts mapped to category IDs
-    let bodyParts = [
+    let muscles = [
         "All": nil,
-        "Chest": 10,
+        "Chest": 4,
         "Legs": 8,
         "Back": 12,
         "Arms": 13,
-        "Shoulders": 14
+        "Shoulders": 14,
+        "Abs": 6
     ]
 
     var filteredExercises: [Exercise] {
         viewModel.exercises.filter { exercise in
-            (selectedBodyPart == nil || exercise.category == selectedBodyPart) &&
+            (selectedMuscle == nil || exercise.muscles.contains(selectedMuscle!)) &&
             (searchText.isEmpty || exercise.name.lowercased().contains(searchText.lowercased()))
         }
     }
@@ -31,50 +38,70 @@ struct WorkoutsView: View {
     var body: some View {
         NavigationView {
             VStack {
-                // Search bar with accent and background color
                 TextField("Search exercises", text: $searchText)
                     .padding()
                     .background(Color.white)
                     .cornerRadius(8)
                     .padding(.horizontal)
                 
-                // Picker for body part selection
-                Picker("Select body part", selection: $selectedBodyPart) {
-                    ForEach(bodyParts.keys.sorted(), id: \.self) { bodyPart in
-                        Text(bodyPart)
-                            .tag(bodyParts[bodyPart] ?? nil)
+                Picker("Select muscle group", selection: $selectedMuscle) {
+                    ForEach(muscles.keys.sorted(), id: \.self) { muscle in
+                        Text(muscle)
+                            .tag(muscles[muscle] ?? nil)
                             .foregroundColor(.white)
                     }
                 }
-                .pickerStyle(SegmentedPickerStyle())
+                .pickerStyle(MenuPickerStyle()) // Change to a dropdown menu
                 .padding()
-                .background(darkGray2) // Dark gray background for picker
+                .background(darkGray2)
                 .cornerRadius(8)
 
-                // Exercise list with custom colors
                 List(filteredExercises, id: \.id) { exercise in
-                    NavigationLink(destination: ExerciseDetailView(exercise: exercise)
-                                    .environmentObject(viewModel)) {
-                        VStack(alignment: .leading) {
-                            Text(exercise.name)
-                                .font(.headline)
-                                .foregroundColor(.white) // White text for exercise name
-                            Text(exercise.description ?? "")
-                                .font(.subheadline)
-                                .foregroundColor(.gray) // Gray text for description
+                    HStack {
+                        // Navigation link area
+                        NavigationLink(destination: ExerciseDetailView(exercise: exercise)
+                                        .environmentObject(viewModel)) {
+                            VStack(alignment: .leading) {
+                                Text(exercise.name)
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                Text(exercise.description ?? "")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(darkGray3)
+                            .cornerRadius(10)
+                            .contentShape(Rectangle()) // Explicitly define tappable area for NavigationLink
                         }
-                        .padding()
-                        .background(darkGray3) // Dark gray background for each list item
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
+                        
+                        Spacer()
+
+                        // Favorite button (this should not be tappable by clicking the entire row)
+                        Button(action: {
+                            if favoritesManager.containsExercise(exercise) {
+                                favoritesManager.removeExercise(exercise)
+                            } else {
+                                favoritesManager.addExercise(exercise)
+                            }
+                        }) {
+                            Image(systemName: favoritesManager.containsExercise(exercise) ? "star.fill" : "star")
+                                .foregroundColor(favoritesManager.containsExercise(exercise) ? .yellow : .gray)
+                        }
                     }
+                    .padding()
+                    .background(darkGray3)
+                    .cornerRadius(10)
                 }
+
                 .listStyle(PlainListStyle())
-                .padding(.bottom, 20) // Padding to ensure no overlap with the tab bar
+                .padding(.bottom, 20)
             }
-            .background(darkGray3.ignoresSafeArea()) // Apply background color to whole view
+            .background(darkGray3.ignoresSafeArea())
             .navigationTitle("Workouts")
-            .foregroundColor(accentColor)
+            .onAppear {
+                viewModel.fetchExercises()
+            }
         }
     }
 }

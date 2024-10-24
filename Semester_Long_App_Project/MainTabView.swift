@@ -44,10 +44,10 @@ struct MainTabView: View {
                 }
 
             // Create Custom Workout Tab
-            CreateCustomWorkoutView()
+            CustomWorkoutsView()
                 .tabItem {
                     Image(systemName: "plus.circle.fill")
-                    Text("Create Workout")
+                    Text("Custom Workouts")
                 }
 
             // Favorites Tab

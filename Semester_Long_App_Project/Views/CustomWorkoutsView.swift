@@ -16,11 +16,9 @@ struct CustomWorkoutsView: View {
     var body: some View {
         NavigationView {
             VStack {
-                // Button to create a new workout
-                Button(action: {
-                    // Navigate to CreateCustomWorkoutView
-                }) {
-                    Text("Create New Workout")
+                // NavigationLink for Create Custom Workout
+                NavigationLink(destination: CreateCustomWorkoutView()) {
+                    Text("Create a Custom Workout")
                         .bold()
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -73,6 +71,7 @@ struct CustomWorkoutsView: View {
         UserDefaults.standard.saveCustomWorkouts(customWorkouts)
     }
 }
+
 
 #Preview {
     CustomWorkoutsView()

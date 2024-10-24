@@ -1,3 +1,10 @@
+//
+//  CustomWorkoutForm.swift
+//  Semester_Long_App_Project
+//
+//  Created by Shield on 10/23/24.
+//
+
 import SwiftUI
 
 struct CustomWorkoutForm: View {
@@ -37,8 +44,8 @@ struct CustomWorkoutForm: View {
                 Text(exercise.name)
                     .foregroundColor(.white)
             }
-            .background(darkGray3)
-            .scrollContentBackground(.hidden) // Ensures List background matches the view
+            .scrollContentBackground(.hidden)
+            .background(darkGray3.ignoresSafeArea())
 
             Spacer()
 
@@ -56,17 +63,17 @@ struct CustomWorkoutForm: View {
                     .cornerRadius(10)
                     .padding(.horizontal, 20)
             }
+            .padding(.bottom, 20)
             .disabled(workoutName.isEmpty)
-            .padding(.bottom, 20)  // Added padding to prevent overlapping with the tab bar
         }
+        .padding(.bottom, 20)
         .background(darkGray3.ignoresSafeArea())
-        .padding(.bottom, 20)  // Additional padding for overall content to avoid the tab bar
     }
 }
 
 #Preview {
     CustomWorkoutForm(
-        selectedExercises: .constant([Exercise(id: 1, name: "Push-Up", description: "A great upper body exercise.", duration: 15, category: 10, language: 2)]),
+        selectedExercises: .constant([Exercise(id: 1, name: "Push-Up", description: "A great upper body exercise.", duration: 15, category: 10, language: 2, muscles: [1, 4])]),
         workoutName: .constant(""),
         workoutDescription: .constant(""),
         onSave: {}

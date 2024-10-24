@@ -40,9 +40,9 @@ struct SavedWorkoutsView: View {
                                 .foregroundColor(.gray)
                         }
                     }
-                    .listRowBackground(darkGray2)
+                    .listRowBackground(darkGray2.ignoresSafeArea())
                 }
-                .background(darkGray3)
+                .background(darkGray3.ignoresSafeArea())
                 .scrollContentBackground(.hidden)
             }
         }
@@ -54,9 +54,13 @@ struct SavedWorkoutsView: View {
 
     private func loadSavedWorkouts() {
         if let workouts = UserDefaults.standard.getSavedWorkouts() {
+            print("Loaded Workouts: \(workouts)") // Debugging line
             savedWorkouts = workouts
+        } else {
+            print("No workouts found.") // Debugging line
         }
     }
+
 }
 
 #Preview {
