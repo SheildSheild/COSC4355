@@ -14,7 +14,8 @@ struct Semester_Long_App_ProjectApp: App {
     var body: some Scene {
         WindowGroup {
             GetStartedView()
-                .environmentObject(favoritesManager) // Inject it into the environment
+                .environmentObject(favoritesManager)
+                .environmentObject(ExerciseViewModel())// Inject it into the environment
         }
     }
 }

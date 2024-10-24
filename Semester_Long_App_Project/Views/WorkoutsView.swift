@@ -8,9 +8,15 @@
 import SwiftUI
 
 struct WorkoutsView: View {
-    @StateObject private var viewModel = ExerciseViewModel() // Assume the ExerciseViewModel is already implemented
+    @StateObject private var viewModel = ExerciseViewModel()
     @State private var searchText = ""
-    @State private var selectedBodyPart: Int? = nil // Filter by category (body part)
+    @State private var selectedBodyPart: Int? = nil
+
+    // Define the color palette
+    let darkGray1 = Color(red: 82/255, green: 82/255, blue: 82/255)
+    let darkGray2 = Color(red: 65/255, green: 65/255, blue: 65/255)
+    let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
+    let accentColor = Color(red: 253/255, green: 175/255, blue: 123/255)
 
     // Example body parts mapped to category IDs
     let bodyParts = [
@@ -30,41 +36,51 @@ struct WorkoutsView: View {
     }
 
     var body: some View {
-        VStack {
-            // Search bar
-            TextField("Search exercises", text: $searchText)
-                .padding()
-                .background(Color.white)
-                .cornerRadius(8)
-                .padding(.horizontal)
-
-            // Body part filter picker
-            Picker("Select body part", selection: $selectedBodyPart) {
-                ForEach(bodyParts.keys.sorted(), id: \.self) { bodyPart in
-                    Text(bodyPart)
-                        .tag(bodyParts[bodyPart] ?? nil) // Fixed the issue here
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding()
-
-            // Exercises list
-            List(filteredExercises, id: \.id) { exercise in
-                NavigationLink(destination: ExerciseDetailView(exercise: exercise)) {
-                    VStack(alignment: .leading) {
-                        Text(exercise.name)
-                            .font(.headline)
-                        Text(exercise.description ?? "")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+        NavigationView {
+            VStack {
+                // Search bar with accent and background color
+                TextField("Search exercises", text: $searchText)
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                
+                // Picker for body part selection
+                Picker("Select body part", selection: $selectedBodyPart) {
+                    ForEach(bodyParts.keys.sorted(), id: \.self) { bodyPart in
+                        Text(bodyPart)
+                            .tag(bodyParts[bodyPart] ?? nil)
+                            .foregroundColor(.white)
                     }
                 }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+                .background(darkGray2) // Dark gray background for picker
+                .cornerRadius(8)
+
+                // Exercise list with custom colors
+                List(filteredExercises, id: \.id) { exercise in
+                    NavigationLink(destination: ExerciseDetailView(exercise: exercise)
+                                    .environmentObject(viewModel)) {
+                        VStack(alignment: .leading) {
+                            Text(exercise.name)
+                                .font(.headline)
+                                .foregroundColor(.white) // White text for exercise name
+                            Text(exercise.description ?? "")
+                                .font(.subheadline)
+                                .foregroundColor(.gray) // Gray text for description
+                        }
+                        .padding()
+                        .background(darkGray3) // Dark gray background for each list item
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                    }
+                }
+                .listStyle(PlainListStyle())
             }
-            .listStyle(PlainListStyle())
-        }
-        .navigationTitle("Workouts")
-        .onAppear {
-            viewModel.fetchExercises() // Fetch exercises from the API when the view appears
+            .background(darkGray3.ignoresSafeArea()) // Apply background color to whole view
+            .navigationTitle("Workouts")
+            .foregroundColor(accentColor) // Apply accent color to the text and elements
         }
     }
 }

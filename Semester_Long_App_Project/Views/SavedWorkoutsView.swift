@@ -7,33 +7,6 @@
 
 import SwiftUI
 
-// Define the CustomWorkout struct
-struct CustomWorkout: Identifiable, Codable, Hashable {
-    var id = UUID() // Unique identifier for the workout
-    var name: String
-    var description: String
-    var exercises: [Exercise] // Assuming `Exercise` is already defined
-}
-
-// Extend UserDefaults for saving and retrieving workouts
-extension UserDefaults {
-    private static let savedWorkoutsKey = "savedWorkouts"
-
-    func saveWorkouts(_ workouts: [CustomWorkout]) {
-        if let encoded = try? JSONEncoder().encode(workouts) {
-            set(encoded, forKey: UserDefaults.savedWorkoutsKey)
-        }
-    }
-
-    func getSavedWorkouts() -> [CustomWorkout]? {
-        if let savedData = data(forKey: UserDefaults.savedWorkoutsKey),
-           let decoded = try? JSONDecoder().decode([CustomWorkout].self, from: savedData) {
-            return decoded
-        }
-        return nil
-    }
-}
-
 struct SavedWorkoutsView: View {
     @State private var savedWorkouts: [CustomWorkout] = []
 
