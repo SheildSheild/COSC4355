@@ -12,7 +12,7 @@ struct CustomWorkoutsView: View {
     @EnvironmentObject var favoritesManager: FavoritesManager // To manage favorites
 
     let darkGray3 = Color(red: 49 / 255, green: 49 / 255, blue: 49 / 255)
-    let accentColor = Color(red: 253 / 255, green: 175 / 255, blue: 123 / 255)
+    let accentColor = Color(red: 255 / 255, green: 133 / 255, blue: 26 / 255)
 
     var body: some View {
         NavigationView {
