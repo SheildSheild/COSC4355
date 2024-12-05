@@ -1,10 +1,3 @@
-//
-//  FavoritesView.swift
-//  Semester_Long_App_Project
-//
-//  Created by Shield on 10/21/24.
-//
-
 import SwiftUI
 
 struct FavoritesView: View {
@@ -17,7 +10,10 @@ struct FavoritesView: View {
     let darkGray2 = Color(red: 65/255, green: 65/255, blue: 65/255)
 
     var body: some View {
-        NavigationView {
+        ZStack {
+            // Background color that fills entire screen
+            darkGray3.edgesIgnoringSafeArea(.all)
+            
             VStack {
                 Text("Favorites")
                     .font(.largeTitle)
@@ -25,12 +21,13 @@ struct FavoritesView: View {
                     .foregroundColor(.white)
                     .padding(.top)
                 
-                Picker("Favorites", selection: $selectedTab) {
+                Picker("", selection: $selectedTab) {
                     Text("Exercises").tag(0)
                     Text("Workouts").tag(1)
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
+                Spacer()
                 
                 if selectedTab == 0 {
                     // Favorite exercises tab
@@ -38,6 +35,8 @@ struct FavoritesView: View {
                         Text("No favorite exercises yet.")
                             .foregroundColor(.gray)
                             .padding()
+                        Spacer()
+                        Spacer()
                     } else {
                         List(favoritesManager.favoriteExercises, id: \.id) { exercise in
                             HStack {
@@ -63,6 +62,7 @@ struct FavoritesView: View {
                             }
                             .listRowBackground(darkGray2)
                         }
+                        .listStyle(PlainListStyle())
                         .background(darkGray3)
                         .scrollContentBackground(.hidden)
                     }
@@ -72,6 +72,8 @@ struct FavoritesView: View {
                         Text("No favorite workouts yet.")
                             .foregroundColor(.gray)
                             .padding()
+                        Spacer()
+                        Spacer()
                     } else {
                         List(favoritesManager.favoriteWorkouts, id: \.id) { workout in
                             VStack(alignment: .leading) {
@@ -84,19 +86,17 @@ struct FavoritesView: View {
                             }
                             .listRowBackground(darkGray2)
                         }
+                        .listStyle(PlainListStyle())
                         .background(darkGray3)
                         .scrollContentBackground(.hidden)
                     }
                 }
             }
-            .background(darkGray3.ignoresSafeArea())
+            .padding()
         }
         .onAppear {
             viewModel.fetchExercises() // Ensure the exercises are fetched
         }
-        .background(Color(red: 70 / 255, green: 70 / 255, blue: 70 / 255)) // Light gray background
-        .cornerRadius(10)
-        .navigationTitle("Favorite Exercises")
     }
 }
 

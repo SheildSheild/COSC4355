@@ -24,14 +24,19 @@ struct FitnessQuizView: View {
                         .progressViewStyle(LinearProgressViewStyle(tint: accentColor))
                         .padding(.horizontal)
                     
-                    Spacer()
-                    
-                    Group {
-                        quizSection(title: "Fitness goal?", options: ["Muscle", "Weight Loss", "Endurance"], selection: $selectedGoal)
-                        quizSection(title: "Experience level?", options: ["Beginner", "Intermediate", "Advanced"], selection: $selectedExperience)
-                        quizSection(title: "Workout preference?", options: ["Weights", "Bodyweight", "Cardio"], selection: $selectedPreference)
+                
+                    VStack (spacing: 50){
+                        Group {
+                            Spacer()
+                            Spacer()
+                            quizSection(title: "Fitness goal?", options: ["Muscle", "Weight Loss", "Endurance"], selection: $selectedGoal)
+                            quizSection(title: "Experience level?", options: ["Beginner", "Intermediate", "Advanced"], selection: $selectedExperience)
+                            quizSection(title: "Workout preference?", options: ["Weights", "Bodyweight", "Cardio"], selection: $selectedPreference)
+                            Spacer()
+                            Spacer()
+                        }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
                     
                     Spacer()
                     
@@ -84,7 +89,7 @@ struct FitnessQuizView: View {
             .padding(.vertical, 10)
             .background(accentColor)
             .cornerRadius(10)
-            .frame(height: 50)
+            .frame(height: 30)
             .labelsHidden()
         }
     }
