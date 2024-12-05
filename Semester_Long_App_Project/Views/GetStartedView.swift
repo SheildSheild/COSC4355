@@ -38,18 +38,6 @@ struct GetStartedView: View {
                         .padding(.horizontal, 20)
                 }
 
-                // Navigate to login view (if applicable)
-                Button(action: {
-                    // Add login action here if needed
-                }) {
-                    Text("I ALREADY HAVE AN ACCOUNT")
-                        .font(.title2)
-                        .bold()
-                        .padding()
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 20)
-                }
-
                 Spacer()
             }
             .background(darkGray3.ignoresSafeArea()) // Apply dark background
