@@ -21,7 +21,7 @@ struct CreateCustomWorkoutView: View {
         VStack {
             // All exercises
             Text("All Exercises")
-                .font(.title2)
+                .font(.title)
                 .foregroundColor(.white)
                 .padding(.top)
 
@@ -41,9 +41,13 @@ struct CreateCustomWorkoutView: View {
                     }
                 }
                 .padding()
-                .background(darkGray3.ignoresSafeArea())
+                .background(Color.white.opacity(0.1))
                 .cornerRadius(10)
-            }
+                .listRowBackground(darkGray3)            }
+            .scrollContentBackground(.hidden)
+            .listStyle(PlainListStyle())
+            .background(darkGray3)
+            
             .onAppear {
                 viewModel.fetchExercises()
             }
@@ -55,7 +59,7 @@ struct CreateCustomWorkoutView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(accentColor)
-                    .foregroundColor(darkGray3)
+                    .foregroundColor(.white)
                     .cornerRadius(10)
                     .padding(.horizontal, 20)
             }
