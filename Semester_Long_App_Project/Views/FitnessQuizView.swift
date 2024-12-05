@@ -8,7 +8,7 @@ struct FitnessQuizView: View {
     
     let darkGray1 = Color(red: 82/255, green: 82/255, blue: 82/255)
     let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
-    let accentColor = Color(red: 253/255, green: 175/255, blue: 123/255)
+    let accentColor = Color(red: 255 / 255, green: 133 / 255, blue: 26 / 255)
     let backgroundColor = Color(red: 36/255, green: 36/255, blue: 36/255)
     
     var body: some View {

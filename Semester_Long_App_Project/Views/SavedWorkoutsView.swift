@@ -12,6 +12,7 @@ struct SavedWorkoutsView: View {
 
     let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
     let darkGray2 = Color(red: 65/255, green: 65/255, blue: 65/255)
+    let accentColor = Color(red: 255 / 255, green: 133 / 255, blue: 26 / 255)
 
     var body: some View {
         VStack {

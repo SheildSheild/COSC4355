@@ -10,7 +10,7 @@ import SwiftUI
 struct GetStartedView: View {
     // Define color palette based on user preferences
     let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
-    let accentColor = Color(red: 253/255, green: 175/255, blue: 123/255)
+    let accentColor = Color(red: 255 / 255, green: 133 / 255, blue: 26 / 255)
 
     var body: some View {
         NavigationView { // Wrap in NavigationView to enable navigation
@@ -33,8 +33,20 @@ struct GetStartedView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(accentColor)
-                        .foregroundColor(darkGray3)
+                        .foregroundColor(.white)
                         .cornerRadius(10)
+                        .padding(.horizontal, 20)
+                }
+
+                // Navigate to login view (if applicable)
+                Button(action: {
+                    // Add login action here if needed
+                }) {
+                    Text("I ALREADY HAVE AN ACCOUNT")
+                        .font(.title2)
+                        .bold()
+                        .padding()
+                        .foregroundColor(.white)
                         .padding(.horizontal, 20)
                 }
 

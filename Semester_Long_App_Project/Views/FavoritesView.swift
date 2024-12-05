@@ -6,8 +6,9 @@ struct FavoritesView: View {
 
     @State private var selectedTab = 0 // 0 for Exercises, 1 for Workouts
 
-    let darkGray3 = Color(red: 49 / 255, green: 49 / 255, blue: 49 / 255)
-    let darkGray2 = Color(red: 65 / 255, green: 65 / 255, blue: 65 / 255)
+    let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
+    let darkGray2 = Color(red: 65/255, green: 65/255, blue: 65/255)
+    let accentColor = Color(red: 255 / 255, green: 133 / 255, blue: 26 / 255)
 
     var body: some View {
         ZStack {
