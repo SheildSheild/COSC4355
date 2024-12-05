@@ -94,7 +94,8 @@ struct FavoritesView: View {
         .onAppear {
             viewModel.fetchExercises() // Ensure the exercises are fetched
         }
-        .background(darkGray3.ignoresSafeArea()) // Ensures entire background is filled
+        .background(Color(red: 70 / 255, green: 70 / 255, blue: 70 / 255)) // Light gray background
+        .cornerRadius(10)
         .navigationTitle("Favorite Exercises")
     }
 }
