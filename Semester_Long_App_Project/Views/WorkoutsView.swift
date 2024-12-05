@@ -58,26 +58,27 @@ struct WorkoutsView: View {
 
                 List(filteredExercises, id: \.id) { exercise in
                     HStack {
-                        // Navigation link area
-                        NavigationLink(destination: ExerciseDetailView(exercise: exercise)
-                                        .environmentObject(viewModel)) {
-                            VStack(alignment: .leading) {
-                                Text(exercise.name)
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                Text(exercise.description ?? "")
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
+                        // NavigationLink is limited to the name and description area
+                        VStack(alignment: .leading) {
+                            NavigationLink(destination: ExerciseDetailView(exercise: exercise)
+                                            .environmentObject(viewModel)) {
+                                VStack(alignment: .leading) {
+                                    Text(exercise.name)
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                    Text(exercise.description ?? "")
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
+                                .padding()
+                                .background(darkGray3)
+                                .cornerRadius(10)
                             }
-                            .padding()
-                            .background(darkGray3)
-                            .cornerRadius(10)
-                            .contentShape(Rectangle()) // Explicitly define tappable area for NavigationLink
                         }
-                        
+
                         Spacer()
 
-                        // Favorite button (this should not be tappable by clicking the entire row)
+                        // Favorite button (separate from NavigationLink)
                         Button(action: {
                             if favoritesManager.containsExercise(exercise) {
                                 favoritesManager.removeExercise(exercise)
@@ -88,6 +89,7 @@ struct WorkoutsView: View {
                             Image(systemName: favoritesManager.containsExercise(exercise) ? "star.fill" : "star")
                                 .foregroundColor(favoritesManager.containsExercise(exercise) ? .yellow : .gray)
                         }
+                        .buttonStyle(BorderlessButtonStyle()) // Prevents the button from affecting the whole row
                     }
                     .padding()
                     .background(darkGray3)

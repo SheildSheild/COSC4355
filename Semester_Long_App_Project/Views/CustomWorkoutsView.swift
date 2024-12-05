@@ -9,9 +9,10 @@ import SwiftUI
 
 struct CustomWorkoutsView: View {
     @State private var customWorkouts: [CustomWorkout] = []
+    @EnvironmentObject var favoritesManager: FavoritesManager // To manage favorites
 
-    let darkGray3 = Color(red: 49/255, green: 49/255, blue: 49/255)
-    let accentColor = Color(red: 253/255, green: 175/255, blue: 123/255)
+    let darkGray3 = Color(red: 49 / 255, green: 49 / 255, blue: 49 / 255)
+    let accentColor = Color(red: 253 / 255, green: 175 / 255, blue: 123 / 255)
 
     var body: some View {
         NavigationView {
@@ -36,14 +37,35 @@ struct CustomWorkoutsView: View {
                 } else {
                     List {
                         ForEach(customWorkouts, id: \.id) { workout in
-                            VStack(alignment: .leading) {
-                                Text(workout.name)
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                Text("Duration: \(workout.duration) mins")
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
+                            HStack {
+                                NavigationLink(destination: WorkoutDetailView(workout: workout)) {
+                                    VStack(alignment: .leading) {
+                                        Text(workout.name)
+                                            .font(.headline)
+                                            .foregroundColor(.white)
+                                        Text("Duration: \(workout.duration) mins")
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                                Spacer()
+
+                                // Favorite button
+                                Button(action: {
+                                    if favoritesManager.containsWorkout(workout) {
+                                        favoritesManager.removeWorkout(workout)
+                                    } else {
+                                        favoritesManager.addWorkout(workout)
+                                    }
+                                }) {
+                                    Image(systemName: favoritesManager.containsWorkout(workout) ? "star.fill" : "star")
+                                        .foregroundColor(favoritesManager.containsWorkout(workout) ? .yellow : .gray)
+                                }
+                                .buttonStyle(BorderlessButtonStyle()) // Prevents the button from triggering the NavigationLink
                             }
+                            .padding()
+                            .background(darkGray3)
+                            .cornerRadius(10)
                         }
                         .onDelete(perform: deleteWorkout)
                     }
@@ -69,6 +91,54 @@ struct CustomWorkoutsView: View {
     func deleteWorkout(at offsets: IndexSet) {
         customWorkouts.remove(atOffsets: offsets)
         UserDefaults.standard.saveCustomWorkouts(customWorkouts)
+    }
+}
+
+struct WorkoutDetailView: View {
+    let workout: CustomWorkout // Expecting a valid CustomWorkout object
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Display workout name
+            Text(workout.name)
+                .font(.largeTitle)
+                .bold()
+                .foregroundColor(.accentColor)
+                .padding()
+
+            // Display workout duration
+            Text("Duration: \(workout.duration) mins")
+                .font(.headline)
+                .foregroundColor(.gray)
+                .padding(.horizontal)
+
+            Divider()
+                .padding(.horizontal)
+
+            // Display exercises in the workout
+            Text("Exercises")
+                .font(.headline)
+                .foregroundColor(.accentColor)
+                .padding(.horizontal)
+
+            ForEach(workout.exercises, id: \.id) { exercise in
+                VStack(alignment: .leading) {
+                    Text(exercise.name)
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+
+                    Text("Sets: \(exercise.muscles.count), Reps: \(exercise.duration ?? 0)")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                }
+                .padding(.vertical, 4)
+            }
+
+            Spacer()
+        }
+        .padding()
+        .background(Color(red: 49 / 255, green: 49 / 255, blue: 49 / 255))
+        .cornerRadius(10)
     }
 }
 

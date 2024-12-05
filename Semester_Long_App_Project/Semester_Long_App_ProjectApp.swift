@@ -9,13 +9,9 @@ import SwiftUI
 
 @main
 struct Semester_Long_App_ProjectApp: App {
-    @StateObject private var favoritesManager = FavoritesManager() // Initialize FavoritesManager
-
     var body: some Scene {
         WindowGroup {
-            GetStartedView()
-                .environmentObject(favoritesManager)
-                .environmentObject(ExerciseViewModel())// Inject it into the environment
+            SplashScreenView()
         }
     }
 }
