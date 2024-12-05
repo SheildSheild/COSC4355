@@ -16,13 +16,13 @@ struct ExerciseDetailView: View {
                 .font(.largeTitle)
                 .bold()
                 .foregroundColor(.white)
-                .padding(.top)
+                .padding()
 
             if let description = exercise.description {
                 Text(description)
                     .font(.body)
                     .foregroundColor(.white)
-                    .padding(.top, 10)
+                    .padding()
             }
             
             // Favorite button
@@ -38,15 +38,18 @@ struct ExerciseDetailView: View {
                         .foregroundColor(favoritesManager.containsExercise(exercise) ? .yellow : .gray)
                     Text(favoritesManager.containsExercise(exercise) ? "Remove from Favorites" : "Add to Favorites")
                         .foregroundColor(.white)
+    
                 }
+                .bold()
                 .padding()
+                .frame(maxWidth: .infinity)
                 .background(Color.gray)
-                .cornerRadius(8)
+                .cornerRadius(10)
             }
 
             Spacer()
         }
-        .padding(.bottom, 20)
+        .padding()
         .background(darkGray3.ignoresSafeArea())
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
